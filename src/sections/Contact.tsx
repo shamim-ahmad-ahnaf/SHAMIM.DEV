@@ -80,14 +80,14 @@ export const Contact = () => {
         setFormState({ name: '', email: '', message: '' });
       } else {
         const data = await response.json();
-        if (data.errors) {
-          console.error('Formspree Errors:', data.errors);
-        }
-        throw new Error('Failed to send message');
+        const errorMessage = data.error || data.message || 'Failed to send message';
+        console.error('Formspree Errors:', data);
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.error('Formspree Error:', error);
       setStatus('error');
+      // You could potentially set a specific error message in state here to show in the UI
     } finally {
       setTimeout(() => setStatus('idle'), 5000);
     }

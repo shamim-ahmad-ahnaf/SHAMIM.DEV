@@ -2,6 +2,9 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,25 +21,44 @@ async function startServer() {
       const { name, email, message } = req.body;
       const formId = process.env.VITE_FORMSPREE_ID || 'xlgorany';
 
+      console.log(`[Contact Form] Forwarding to Formspree ID: ${formId}`);
+      console.log(`[Contact Form] Payload: ${JSON.stringify({ name, email, message })}`);
+
       const response = await fetch(`https://formspree.io/f/${formId}`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name, email, message })
+        body: JSON.stringify({ 
+          name, 
+          email, 
+          message,
+          _replyto: email // Adding _replyto for better Formspree compatibility
+        })
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      let data;
+      
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        console.error('[Contact Form] Non-JSON response from Formspree:', text);
+        data = { error: 'Formspree returned an unexpected response format', details: text };
+      }
       
       if (response.ok) {
+        console.log('[Contact Form] Successfully sent to Formspree');
         res.status(200).json({ success: true });
       } else {
+        console.error(`[Contact Form] Formspree error (${response.status}):`, data);
         res.status(response.status).json(data);
       }
     } catch (error) {
-      console.error('Server Proxy Error:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('[Contact Form] Server Proxy Error:', error);
+      res.status(500).json({ error: 'Internal Server Error', message: error instanceof Error ? error.message : String(error) });
     }
   });
 

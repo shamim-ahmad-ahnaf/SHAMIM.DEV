@@ -108,10 +108,10 @@ export const ChatBot = () => {
             initial={{ opacity: 0, y: 100, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            className="fixed bottom-0 right-0 sm:bottom-28 sm:right-8 z-[100] w-full sm:w-[400px] h-full sm:h-[600px] sm:max-h-[70vh] glass border-t sm:border border-white/10 flex flex-col overflow-hidden shadow-2xl sm:rounded-2xl"
+            className="fixed bottom-0 right-0 sm:bottom-28 sm:right-8 z-[100] w-full sm:w-[450px] h-[100dvh] sm:h-[750px] sm:max-h-[85vh] bg-[#0a0a0a]/95 backdrop-blur-2xl border-t sm:border border-white/10 flex flex-col overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] sm:rounded-2xl"
           >
             {/* Header */}
-            <div className="p-5 sm:p-6 bg-primary/10 border-b border-white/10 flex items-center justify-between">
+            <div className="p-5 sm:p-6 bg-[#111] border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary border border-primary/30">
                   <Bot size={20} />
@@ -133,7 +133,7 @@ export const ChatBot = () => {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 custom-scrollbar">
               {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
@@ -179,7 +179,7 @@ export const ChatBot = () => {
             </div>
 
             {/* Suggestions */}
-            <div className="px-5 sm:px-6 pb-4 flex flex-wrap gap-2">
+            <div className="px-5 sm:px-6 pb-4 flex flex-wrap gap-2 bg-transparent relative z-10">
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s.key}
@@ -193,7 +193,7 @@ export const ChatBot = () => {
             </div>
 
             {/* Input Area */}
-            <div className="p-5 sm:p-6 border-t border-white/10 bg-background/50 pb-8 sm:pb-6">
+            <div className="p-5 sm:p-6 border-t border-white/10 bg-black/40 backdrop-blur-md pb-8 sm:pb-6">
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
